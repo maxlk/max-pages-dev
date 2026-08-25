@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Метод Томатис: проверка фактов — Центр Томатис Хариш</title>
+<style>
+  :root {
+    --bg: #fbfaf8;
+    --surface: #ffffff;
+    --text: #1c1b19;
+    --muted: #5f5c56;
+    --line: #e3e0d9;
+    --accent: #7a5c2e;
+    --good: #2f6b43;
+    --good-bg: #eef6f0;
+    --bad: #9c3025;
+    --bad-bg: #fbeeec;
+    --warn: #8a6a12;
+    --warn-bg: #fdf6e3;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #161513;
+      --surface: #1e1d1a;
+      --text: #eae7e0;
+      --muted: #a5a099;
+      --line: #322f2a;
+      --accent: #d4ab6a;
+      --good: #7fc79a;
+      --good-bg: #1a2620;
+      --bad: #e39289;
+      --bad-bg: #2a1c1a;
+      --warn: #d9b95c;
+      --warn-bg: #262111;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 17px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 48px 24px 96px; }
+
+  header { border-bottom: 2px solid var(--text); padding-bottom: 22px; margin-bottom: 36px; }
+  .kicker {
+    font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 14px;
+  }
+  h1 { font-size: 34px; line-height: 1.2; margin: 0 0 14px; letter-spacing: -.015em; }
+  .source { font-size: 14px; color: var(--muted); margin: 0; }
+  .source a { color: var(--muted); }
+
+  h2 {
+    font-size: 23px; line-height: 1.25; margin: 52px 0 16px;
+    padding-top: 22px; border-top: 1px solid var(--line); letter-spacing: -.01em;
+  }
+  h3 { font-size: 17px; margin: 28px 0 8px; }
+  p { margin: 0 0 16px; }
+  a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+
+  .verdict {
+    background: var(--surface); border: 1px solid var(--line);
+    border-left: 4px solid var(--accent);
+    border-radius: 4px; padding: 22px 24px; margin: 0 0 12px;
+  }
+  .verdict p:last-child { margin-bottom: 0; }
+  .verdict strong { color: var(--accent); }
+
+  ul, ol { margin: 0 0 16px; padding-left: 24px; }
+  li { margin-bottom: 8px; }
+
+  .tag {
+    display: inline-block; font-size: 11px; font-weight: 700;
+    letter-spacing: .08em; text-transform: uppercase;
+    padding: 3px 9px; border-radius: 3px; vertical-align: 2px; margin-right: 10px;
+  }
+  .tag-good { background: var(--good-bg); color: var(--good); }
+  .tag-bad  { background: var(--bad-bg);  color: var(--bad); }
+  .tag-warn { background: var(--warn-bg); color: var(--warn); }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 4px; padding: 18px 20px; margin-bottom: 14px;
+  }
+  .card p:last-child { margin-bottom: 0; }
+  .card-title { font-weight: 700; margin-bottom: 6px; }
+
+  .table-scroll { overflow-x: auto; margin: 0 0 20px; -webkit-overflow-scrolling: touch; }
+  table { border-collapse: collapse; width: 100%; font-size: 15px; min-width: 520px; }
+  caption { text-align: left; font-size: 14px; color: var(--muted); padding-bottom: 10px; }
+  th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  thead th { font-size: 12px; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); border-bottom: 2px solid var(--text); }
+  tbody tr:last-child td { border-bottom: none; }
+  td:first-child { width: 34%; font-weight: 600; }
+
+  blockquote {
+    margin: 0 0 16px; padding: 14px 18px;
+    background: var(--warn-bg); border-left: 3px solid var(--warn);
+    border-radius: 0 4px 4px 0; font-size: 15.5px;
+  }
+  blockquote p:last-child { margin-bottom: 0; }
+
+  .steps { counter-reset: s; list-style: none; padding: 0; }
+  .steps li {
+    counter-increment: s; position: relative;
+    padding-left: 42px; margin-bottom: 16px;
+  }
+  .steps li::before {
+    content: counter(s);
+    position: absolute; left: 0; top: 1px;
+    width: 27px; height: 27px; border-radius: 50%;
+    background: var(--accent); color: var(--bg);
+    font-size: 14px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .sources { font-size: 14.5px; }
+  .sources li { margin-bottom: 7px; }
+
+  footer {
+    margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--line);
+    font-size: 13px; color: var(--muted);
+  }
+
+  @media (max-width: 560px) {
+    .wrap { padding: 32px 18px 64px; }
+    h1 { font-size: 27px; }
+    h2 { font-size: 20px; }
+    body { font-size: 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Проверка фактов · Разбор рекламного лонгрида</div>
+  <h1>Метод Томатис при СДВГ: что за этим стоит на самом деле</h1>
+  <p class="source">Разбираемый материал: «Центр Томатис Хариш — Спецвыпуск», Мориэль Фишман — <a href="https://tomatis-harish.com/longread-gazette/">tomatis-harish.com/longread-gazette</a></p>
+</header>
+
+<h2 style="border-top:none; padding-top:0; margin-top:0;">Коротко</h2>
+
+<div class="verdict">
+  <p>Боль, описанная в тексте, — <strong>настоящая</strong>. Механизм, который продаётся как её причина, — <strong>теория 1950-х годов, за 70 лет так и не получившая подтверждения</strong>. Текст написан по канонам агрессивного инфомаркетинга.</p>
+  <p>Это не «чистый воздух», но и не медицина: это платная услуга с недоказанной эффективностью, продаваемая языком доказанной.</p>
+</div>
+
+<h2><span class="tag tag-good">Верно</span>Что в статье фактически верно</h2>
+
+<div class="card">
+  <div class="card-title">Побочные эффекты стимуляторов</div>
+  <p>Потеря аппетита, нарушения сна и rebound-эффект («вечером дома ад», когда действие заканчивается) — реальные, документированные явления, а не выдумка родительских чатов.</p>
+</div>
+
+<div class="card">
+  <div class="card-title">Критика стандартных диагностик</div>
+  <p>Дидактическая и психодидактическая диагностика действительно описывает, <em>что</em> трудно, и даёт права в системе (התאמות), но не объясняет нейрофизиологию. Цены 1500–4500 ₪ в Израиле правдоподобны.</p>
+</div>
+
+<div class="card">
+  <div class="card-title">Пример «шишки / мишки»</div>
+  <p>Реальный когнитивный феномен — восстановление слова по контексту при недостатке акустической информации в шуме. Расстройство обработки слуховой информации (APD) — существующая диагностическая категория. Сенсорная гиперчувствительность при СДВГ и в спектре тоже реальна.</p>
+</div>
+
+<div class="card">
+  <div class="card-title">Книга Дойджа</div>
+  <p>«Мозг, исцеляющий себя» (<em>The Brain’s Way of Healing</em>, 2015), глава 8 — там действительно про Томатиса и Поля Мадоля. Но это научпоп, а не доказательство; Дойджа профессионально критикуют именно за некритичный пересказ заявлений практиков нейропластичности.</p>
+</div>
+
+<h2><span class="tag tag-bad">Не подтверждено</span>Ядро методики</h2>
+
+<h3>«Ухо — динамо-машина, заряжающая мозг»</h3>
+<p>Это авторская теория Томатиса о «кортикальном заряде»: якобы высокие частоты повышают электрический потенциал коры и «тонизируют» нервную систему. У этого нет нейрофизиологической основы. Обратите внимание: вся конструкция «энергетический запас мозга, батарейка разряжается, поэтому ребёнок вертится» — метафора, поданная как физиология.</p>
+
+<h3>Единый корень у СДВГ, задержки речи, аутизма и эмоциональной дисрегуляции</h3>
+<p>«Разные картины. Один корень» — моноказуальное объяснение гетерогенных состояний. Классический маркер псевдонаучного подхода: чем шире спектр «излечиваемого», тем слабее специфичность механизма.</p>
+
+<h3>Доказательная база — фактически отсутствует</h3>
+
+<div class="table-scroll">
+<table>
+  <caption>Что говорят независимые профессиональные организации и систематические обзоры</caption>
+  <thead>
+    <tr><th>Источник</th><th>Вывод</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ASHA, позиция 2004 (в силе)</td>
+      <td>AIT (включая Томатис) не соответствует научным стандартам эффективности; предоставление таких услуг вне исследований может нарушать Кодекс этики.</td>
+    </tr>
+    <tr>
+      <td>American Academy of Audiology, 2010</td>
+      <td>Контролируемых исследований, подтверждающих эффективность, нет; экспериментальный статус обязан быть раскрыт клиенту <em>до</em> оплаты.</td>
+    </tr>
+    <tr>
+      <td>Cochrane (Sinha et al., 2011)</td>
+      <td>По Томатису — <strong>одна</strong> РКИ. Всего 182 участника в 7 исследованиях, у 5 — менее 20 человек, сокрытие распределения неадекватно во всех. Метаанализ невозможен.</td>
+    </tr>
+    <tr>
+      <td>Gilmor 1999 — главный «положительный» метаанализ</td>
+      <td>5 исследований, почти без рандомизации. Единственное рандомизированное (Cummings 1985) дало <strong>нулевой результат</strong>. И самое показательное: эффект по <em>слуховым</em> показателям d = 0,04 — метод не сдвинул даже то, что заявлен менять.</td>
+    </tr>
+    <tr>
+      <td>Текущее состояние</td>
+      <td>Одна регистрируемая РКИ (NCT06534515, Румыния, n = 40). Результатов нет.</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>Почти вся «поддерживающая» литература публикуется и хостится самой Tomatis Association и центрами-провайдерами. Независимых подтверждений нет.</p>
+
+<h3>О сертификации</h3>
+<p>«Сертифицированный центр Tomatis Développement S.A.» — это <strong>коммерческая</strong> сертификация: пройденный курс компании-производителя и купленное оборудование. Не клиническая лицензия и не признание методики медицинским сообществом.</p>
+
+<h2><span class="tag tag-warn">Флаги</span>Красные флаги в самом тексте</h2>
+
+<h3>Дисклеймер в подвале противоречит всей странице</h3>
+<p>В теле текста обещано «найти истинные причины сбоев в работе мозга», «перенастроить работу мозга», приведён кейс с отменой психиатрических препаратов. В подвале — по-английски, не по-русски:</p>
+<blockquote>
+  <p>…не медицинские услуги, не предназначено для диагностики, лечения или предотвращения каких-либо состояний, продукты Tomatis не являются медицинскими приборами.</p>
+</blockquote>
+<p>Это юридическая страховка, и она признаёт ровно то, что текст выше отрицает. Самый честный абзац на странице.</p>
+
+<h3>Ключевой кейс не выдерживает проверки</h3>
+<p>Тики Туретта приписаны риталину. Метаанализ 22 двойных слепых РКИ (Cohen et al., 2015, n = 2385) даёт <strong>5,7 %</strong> новых или усиленных тиков на стимуляторах против <strong>6,5 %</strong> на плацебо — разницы нет. При этом около 20 % детей с СДВГ развивают хроническое тикозное расстройство независимо от лечения.</p>
+<p>Дальше: препараты сняли месяц назад, регресс — от отмены, «через две недели вернулся к лучшей версии» — это ровно тот срок, за который проходит withdrawal. Ни один элемент причинности здесь не изолирован.</p>
+
+<h3>Второй отзыв — та же проблема</h3>
+<p>Неговорящий ребёнок, которого «прорвало через три месяца». Это самая частая ситуация, где спонтанное развитие и regression to the mean неотличимы от эффекта вмешательства — особенно если параллельно шли логопед и трудотерапия (в отзыве не упомянуты, но по контексту сайта типичны).</p>
+
+<h3>Приёмы продаж</h3>
+<ul>
+  <li><strong>Якорение цены:</strong> «реальная стоимость 900, отдаю за 300» + сравнение с 1500–4500.</li>
+  <li><strong>Искусственный дефицит:</strong> «не больше пяти диагностик в неделю».</li>
+  <li><strong>Обещание, переупакованное в «побочные эффекты»:</strong> «в дом вернутся смех и радость».</li>
+  <li><strong>Ложная дихотомия:</strong> «таблетка = удобство взрослых» против «настоящей помощи».</li>
+  <li><strong>Нефальсифицируемая гарантия:</strong> «я не беру детей, которым не могу помочь».</li>
+</ul>
+
+<h3>Ни одной ссылки на исследование</h3>
+<p>Страница, продающая нейрофизиологический механизм, не цитирует ни одной работы — только эмоциональные отзывы. Для методики с 70-летней историей это выбор, а не упущение.</p>
+
+<h3>Личная история</h3>
+<p>Скорее всего искренняя, но привязки не работают: двухчасовая потеря сознания в 9 лет — это не картина сенсорной гиперчувствительности, а острый миокардит — вирусное или иммунное заболевание, он не бывает «ценой усердной учёбы». Это ретроспективное встраивание разных событий в одну линию.</p>
+
+<h2>Что с этим делать</h2>
+
+<p>За 300 ₪ финансовый риск минимален, и подробный опросник плюс разговор с внимательным специалистом сами по себе могут дать родителю полезную структуру. Реальная цена другая — <strong>упущенное время</strong> и антимедикаментозная рамка: методика продаётся как альтернатива тому, у чего доказательная база сильнейшая в детской психиатрии.</p>
+
+<p>Если это про конкретного ребёнка, порядок такой:</p>
+
+<ol class="steps">
+  <li><strong>Слух и обработка звука.</strong> При подозрении на APD — к клиническому аудиологу (קלינאי תקשורת / אודיולוג) за валидированной диагностикой, а не к «проверке слушания» Томатиса, у которой нет установленной надёжности как у инструмента.</li>
+  <li><strong>По СДВГ — то, что работает:</strong> поведенческий тренинг для родителей, адаптации в школе, физическая активность и при показаниях медикаменты (наибольший размер эффекта). Побочки — предмет подбора дозы и препарата, а не повод отказываться от класса целиком.</li>
+  <li><strong>Маршрут в Израиле:</strong> через купат холим в מרכז התפתחות הילד; там же положенные часы сопровождения и התאמות.</li>
+  <li><strong>Если всё-таки идти к Томатису</strong> — только как к дополнению, никогда как к замене. С фиксированным заранее бюджетом и заранее сформулированным измеримым критерием: «если через X недель не изменилось Y — прекращаем». Без такого критерия программа продлевается бесконечно.</li>
+</ol>
+
+<h2>Источники</h2>
+<ul class="sources">
+  <li><a href="https://www.asha.org/policy/ps2004-00218/">ASHA Position Statement: Auditory Integration Training (2004)</a></li>
+  <li><a href="https://www.audiology.org/practice-guideline/position-statement-auditory-integration-training-ait/">AAA Position Statement: Auditory Integration Training</a></li>
+  <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC7173755/">Cochrane: Auditory integration training and other sound therapies for ASD</a></li>
+  <li><a href="https://www.pencru.org/v8media/universityofexeter/medicalschool/subsites/pencru/pdfs/AIT_Tomatis.pdf">PenCRU (Univ. of Exeter): Is Auditory Integration Training effective?</a></li>
+  <li><a href="https://www.tandfonline.com/doi/abs/10.1080/10904018.1999.10499024">Gilmor 1999, метаанализ (International Journal of Listening)</a></li>
+  <li><a href="https://pubmed.ncbi.nlm.nih.gov/26299294/">Cohen et al. 2015: Risk of Tics Associated With Psychostimulant Use</a></li>
+  <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4140657/">Misplaced Fear? FDA Contraindication to Psychostimulant Use in Children with Tics</a></li>
+  <li><a href="https://clinicaltrials.gov/study/NCT06534515">Идущая РКИ: Tomatis Auditory Stimulation in Children with NDDs (NCT06534515)</a></li>
+  <li><a href="https://tomatisassociation.org/a-review-of-research-done-on-tomatis-auditory-stimulation/">Tomatis Association: обзор исследований (сторона-продавец)</a></li>
+</ul>
+
+<footer>
+  Разбор носит информационный характер и не является медицинской консультацией. Решения по диагностике и лечению ребёнка принимаются с лечащим врачом.
+</footer>
+
+</div>
+</body>
+</html>
